@@ -1,0 +1,5 @@
+{
+    "imports": {
+        "lucid": "https://deno.land/x/lucid@0.10.7/mod.ts"
+    }
+}

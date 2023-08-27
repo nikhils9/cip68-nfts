@@ -4,3 +4,10 @@ artifacts/
 build/
 # Aiken's default documentation export
 docs/
+# Wallet credentails
+*.sk
+*.addr
+# Temporary workings
+scratch.ts
+# VSCode files
+*.code-workspace
