@@ -9,5 +9,3 @@ docs/
 *.addr
 # Temporary workings
 scratch.ts
-# VSCode files
-*.code-workspace

@@ -1,6 +1,6 @@
 export type AppliedValidator = {
-    validator: any,
-    policyId: string,
-    lockAddress: string,
-    params: [any]
+  validator: any;
+  policyId: string;
+  lockAddress: string;
+  params: [any];
 };
