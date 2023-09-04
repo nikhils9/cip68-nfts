@@ -1,5 +1,10 @@
-export const NETWORK = "Preprod";
+import { Network } from "lucid";
+
+export const NETWORK: Network = "Preprod";
 
 export const BLOCKFROST_URL = "https://cardano-preprod.blockfrost.io/api/v0";
 
-export const CREDENTIALS_PATH = "/home/shetty/projects/cip68-nfts/wallets/";
+// Paths
+export const PROJECT_PATH = "/home/shetty/projects/cip68-nfts/";
+export const CREDENTIALS_PATH = PROJECT_PATH + "wallets/";
+export const APPLIED_VALIDATOR_PATH = PROJECT_PATH + "applied-validators/";

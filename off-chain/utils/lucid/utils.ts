@@ -1,16 +1,45 @@
-import { CREDENTIALS_PATH, NETWORK } from "../../common/constants.ts";
+import {
+  APPLIED_VALIDATOR_PATH,
+  BLOCKFROST_URL,
+  CREDENTIALS_PATH,
+  NETWORK,
+} from "../../common/constants.ts";
 import { AppliedValidator } from "../../common/types.ts";
 import {
   addAssets,
   applyDoubleCborEncoding,
   applyParamsToScript,
   Assets,
+  Blockfrost,
+  Data,
   Lucid,
+  Network,
+  Provider,
   Script,
   UTxO,
 } from "lucid";
 
 const lucid = await Lucid.new(undefined, NETWORK);
+
+export async function createLucidInstance(
+  provider?: Provider,
+  network?: Network,
+) {
+  let defaultNetwork = NETWORK;
+  let defaultProvider: Provider = new Blockfrost(
+    BLOCKFROST_URL,
+    Deno.env.get("BLOCKFROST_API_KEY"),
+  );
+
+  if (provider) {
+    defaultProvider = provider;
+  }
+  if (network) {
+    defaultNetwork = network;
+  }
+
+  return await Lucid.new(defaultProvider, defaultNetwork);
+}
 
 // Credentials related utilities
 
@@ -42,7 +71,7 @@ export async function getCredential(fileName: string, filePath?: string) {
 }
 
 export function getPublicKeyHash(address: string) {
-  return lucid.utils.getAddressDetails(address).paymentCredential?.hash;
+  return lucid.utils.getAddressDetails(address).paymentCredential?.hash!;
 }
 
 // UTxOs related utilities
@@ -70,7 +99,7 @@ export function parseValidator(validators: any, title: string): Script {
 
 export function parseValidatorAndApplyParameters(
   validators: any,
-  params: [any],
+  params: Data[],
   title: string,
 ): AppliedValidator {
   const validator = parseValidator(validators, title);
@@ -79,7 +108,7 @@ export function parseValidatorAndApplyParameters(
 
 export function applyValidatorParameters(
   rawValidator: Script,
-  params: [any],
+  params: Data[],
   title: string,
 ): AppliedValidator {
   const compiledCode = applyParamsToScript(rawValidator.script, params);
@@ -105,7 +134,10 @@ export function applyValidatorParameters(
   );
   console.log(appliedValidatorString);
 
-  Deno.writeTextFile(title + "_applied_validator.json", appliedValidatorString);
+  Deno.writeTextFile(
+    APPLIED_VALIDATOR_PATH + title + ".json",
+    appliedValidatorString,
+  );
 
   return appliedValidator;
 }

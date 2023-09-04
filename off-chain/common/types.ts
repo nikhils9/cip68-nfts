@@ -1,6 +1,8 @@
+import { Data, Script } from "lucid";
+
 export type AppliedValidator = {
-  validator: any;
+  validator: Script;
   policyId: string;
   lockAddress: string;
-  params: [any];
+  params: Data[];
 };
