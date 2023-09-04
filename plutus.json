@@ -23,7 +23,7 @@
           }
         },
         {
-          "title": "store_addr",
+          "title": "store",
           "schema": {
             "$ref": "#/definitions/ByteArray"
           }

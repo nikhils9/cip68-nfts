@@ -15,7 +15,7 @@ use cip68_nfts/types.{Burn, MintAction}
 
 validator(
   issuer: Hash<Blake2b_224, VerificationKey>,
-  store_addr: Hash<Blake2b_224, Script>,
+  store: Hash<Blake2b_224, Script>,
 ) {
   fn mint(rdmr: MintAction, ctx: ScriptContext) -> Bool {
     let ScriptContext { transaction, purpose } = ctx
@@ -46,7 +46,7 @@ validator(
                 prefixes.prefix_222,
               )
 
-            let store_address = credential.from_script(store_addr)
+            let store_address = credential.from_script(store)
             trace cbor.diagnostic(ref_tkn)
             trace cbor.diagnostic(store_address)
 
