@@ -1,4 +1,5 @@
 use aiken/bytearray
+use aiken/cbor
 use aiken/hash.{Blake2b_224, Hash}
 use aiken/list
 use aiken/transaction.{Mint, ScriptContext, Transaction}
@@ -46,29 +47,31 @@ validator(
               )
 
             let store_address = credential.from_script(store_addr)
+            trace cbor.diagnostic(ref_tkn)
+            trace cbor.diagnostic(store_address)
 
             and {
-              signing.verify_sig(transaction.extra_signatories, issuer),
+              signing.verify_sig(transaction.extra_signatories, issuer)?,
               // Allow only two nfts to be minted at once
-              list.length(mint_flat) == 2,
+              (list.length(mint_flat) == 2)?,
               // Check reference nft being minted
-              minting.exact(mint_flat, policy_id, ref_tkn, 1),
+              minting.exact(mint_flat, policy_id, ref_tkn, 1)?,
               // Check user nft being minted
-              minting.exact(mint_flat, policy_id, user_tkn, 1),
+              minting.exact(mint_flat, policy_id, user_tkn, 1)?,
               // Must send the reference nft to store address
               payout.at_least(
                 store_address,
                 value.from_asset(policy_id, ref_tkn, 1),
                 outputs,
-              ),
+              )?,
             }
           }
           // TODO add check on output datum of utxo containing reference token
           Burn -> and {
-              signing.verify_sig(transaction.extra_signatories, issuer),
+              signing.verify_sig(transaction.extra_signatories, issuer)?,
               // Check nfts with ref and user token prefixes are burnt
-              minting.by_prefix(mint_flat, policy_id, prefixes.prefix_100, -1),
-              minting.by_prefix(mint_flat, policy_id, prefixes.prefix_222, -1),
+              minting.by_prefix(mint_flat, policy_id, prefixes.prefix_100, -1)?,
+              minting.by_prefix(mint_flat, policy_id, prefixes.prefix_222, -1)?,
               // Must burn exactly two nfts. Check token names to ensure the nft pairs are correct
               when mint_flat is {
                 [(_pid1, tkn1, _amt1), (_pid2, tkn2, _amt2)] ->
