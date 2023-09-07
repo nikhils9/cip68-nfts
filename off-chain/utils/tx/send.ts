@@ -1,19 +1,21 @@
-import { Blockfrost, Lucid } from "lucid";
-import { BLOCKFROST_URL, NETWORK } from "../../common/constants.ts";
+import { createLucidInstance, getCredential } from "../lucid/utils.ts";
 
-const lucid = await Lucid.new(
-  new Blockfrost(BLOCKFROST_URL, await Deno.env.get("BLOCKFROST_API_KEY")),
-  NETWORK,
-);
+const lucid = await createLucidInstance();
 
-lucid.selectWalletFromPrivateKey(await Deno.readTextFile("./provider.sk"));
+lucid.selectWalletFromPrivateKey(await getCredential("user.sk"));
 
-const asset = { lovelace: 5000000n };
-const receiver = await Deno.readTextFile("./distributor.addr");
+//const asset = { lovelace: 5000000n };
+const token = {
+  ["781b0f6aee558273d74cf7ffad4454a08dc5ea5d7bde73a29fdd990d000de14001cd485e2906baadd152a75b51835ccf876df02b25470c26151ba02b"]:
+    1n,
+};
+// const receiver = await getCredential("issuer.addr");
+const receiver =
+  "addr_test1qrmdrjfxyzzda9rcq459lljmmke0jffnttpvu2za5zpr7p4za8cfdkfad86l0yyn0vdmrqu66dt6zafasg85laeqe6uqd248et";
 
 const tx = await lucid
   .newTx()
-  .payToAddress(receiver, asset)
+  .payToAddress(receiver, token)
   .complete();
 
 const signedTx = await tx.sign().complete();
