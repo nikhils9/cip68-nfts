@@ -54,6 +54,8 @@ validator(
               signing.verify_sig(transaction.extra_signatories, issuer)?,
               // Allow only two nfts to be minted at once
               (list.length(mint_flat) == 2)?,
+              // Prevent byte overflow leading to duplicate asset names
+              first_idx < 256,
               // Check reference nft being minted
               minting.exact(mint_flat, policy_id, ref_tkn, 1)?,
               // Check user nft being minted
