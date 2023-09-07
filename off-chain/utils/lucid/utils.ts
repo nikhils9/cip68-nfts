@@ -132,7 +132,6 @@ export function applyValidatorParameters(
     appliedValidator,
     bigIntReplacer,
   );
-  console.log(appliedValidatorString);
 
   Deno.writeTextFile(
     APPLIED_VALIDATOR_PATH + title + ".json",
