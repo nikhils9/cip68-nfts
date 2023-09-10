@@ -50,17 +50,10 @@ const userNFT = toUnit(
 const mintRdmr = Data.to(new Constr(0, []));
 
 // TODO create Metadatum type for direct serialization
-// Metadata to be store in the datum of UTxO containing Ref NFT
-const metadata = new Map<string, string>();
-metadata.set(fromText("name"), fromText("The Prince"));
-metadata.set(
-  fromText("image"),
-  fromText("ipfs://QmPUi8j9XgcDrWrr4h5aa8AN4bN813ptTWc1JnmJQfLwa3"),
+// Metadata to be stored in the datum of UTxO containing Ref NFT
+const metadata = Data.fromJson(
+  JSON.parse(await Deno.readTextFile("./nft-metadata.json")),
 );
-metadata.set(fromText("artist"), fromText("Niccolo Machiavelli"));
-metadata.set(fromText("mediaType"), fromText("image/png"));
-metadata.set(fromText("description"), fromText("The future ruler"));
-console.log(metadata);
 const version = 1n;
 const extra = Data.void();
 
