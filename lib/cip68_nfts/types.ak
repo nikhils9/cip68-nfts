@@ -14,7 +14,7 @@ pub type StoreAction {
 
 // Datum type 
 pub type MetaDatum {
-  metadata: Dict<ByteArray, ByteArray>,
+  metadata: Dict<ByteArray, Data>,
   version: Int,
-  extra: Data,
+  extra: ByteArray,
 }
