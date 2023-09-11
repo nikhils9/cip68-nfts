@@ -1,5 +1,4 @@
 use aiken/bytearray
-use aiken/cbor
 use aiken/hash.{Blake2b_224, Hash}
 use aiken/list
 use aiken/transaction.{Mint, ScriptContext, Transaction}
@@ -12,6 +11,7 @@ use assist/prefixes
 use assist/signing
 use assist/values
 use cip68_nfts/types.{Burn, MintAction}
+use cip68_nfts/utils
 
 validator(
   issuer: Hash<Blake2b_224, VerificationKey>,
@@ -39,6 +39,7 @@ validator(
                 first_idx,
                 prefixes.prefix_100,
               )
+            let ref_value = value.from_asset(policy_id, ref_tkn, 1)
             let user_tkn =
               values.unique_token_name(
                 first_txid,
@@ -47,8 +48,7 @@ validator(
               )
 
             let store_address = credential.from_script(store)
-            trace cbor.diagnostic(ref_tkn)
-            trace cbor.diagnostic(store_address)
+            let output_utxo = utils.output_by_addr_value(outputs, store_address, ref_value)
 
             and {
               signing.verify_sig(transaction.extra_signatories, issuer)?,
@@ -63,9 +63,10 @@ validator(
               // Must send the reference nft to store address
               payout.at_least(
                 store_address,
-                value.from_asset(policy_id, ref_tkn, 1),
+                ref_value,
                 outputs,
               )?,
+              utils.check_output_utxo(output_utxo)?
             }
           }
           // TODO add check on output datum of utxo containing reference token
