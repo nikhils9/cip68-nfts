@@ -1,5 +1,19 @@
-import { Constr, Data, fromHex, fromText, toHex, toUnit, UTxO } from "lucid";
-import { createLucidInstance, getCredential } from "./utils/lucid/utils.ts";
+import {
+  addAssets,
+  assetsToValue,
+  Constr,
+  Data,
+  fromHex,
+  fromText,
+  toHex,
+  toUnit,
+  UTxO,
+} from "lucid";
+import {
+  createLucidInstance,
+  getCredential,
+  getUtxoWithAssets,
+} from "./utils/lucid/utils.ts";
 import { crypto } from "crypto";
 import {
   APPLIED_VALIDATOR_PATH,
@@ -19,11 +33,13 @@ const userUtxos = await lucid.utxosAt(userAddr);
 if (!userUtxos || !userUtxos.length) {
   console.error("No UTxO found at user address: " + userAddr);
 }
-// TODO Idx of utxo < 256
-// TODO take only the utxo required for tx costs
 
-// Taking the first utxo for calculating name
-const assetNameSuffix = await getUniqueAssetName(userUtxos[0]);
+// TODO Idx of utxo < 256
+// Selecting a utxo containing atleast 4 ADA to cover tx fees and min ADA
+const selectedUtxo = getUtxoWithAssets(userUtxos, { ["lovelace"]: 4000000n });
+
+// Calculating asset name from the utxo which will be spent in the minting tx
+const assetNameSuffix = await getUniqueAssetNameSuffix(selectedUtxo);
 
 const mintValidator: AppliedValidator = JSON.parse(
   await Deno.readTextFile(APPLIED_VALIDATOR_PATH + "mint.mint.json"),
@@ -67,7 +83,7 @@ client for assembling the tx with distributor witness and sign + submit.
 // TODO: Instead of selecting all utxos at script and user addresses, select based on tx costs
 const tx = await lucid
   .newTx()
-  .collectFrom(userUtxos)
+  .collectFrom([selectedUtxo])
   .mintAssets({ [userNFT]: 1n, [refNFT]: 1n }, mintRdmr)
   .attachMintingPolicy(mintValidator.validator)
   .payToAddress(userAddr, { [userNFT]: 1n })
@@ -104,9 +120,9 @@ token: ${mintValidator.policyId},
 txHash: ${txHash}`,
 );
 
-// Returns a `Unit` by creating a unique asset name using a utxo's txid and idx
-// The asset label (as per CIP68) is then prefixed to the name
-async function getUniqueAssetName(utxo: UTxO): Promise<string> {
+// Returns a unique asset name suffix using a utxo's txid and idx
+// The asset label (as per CIP68) can then prefixed to the name for a unique asset name
+async function getUniqueAssetNameSuffix(utxo: UTxO): Promise<string> {
   const hash = new Uint8Array(
     await crypto.subtle.digest(
       "SHA3-256",
