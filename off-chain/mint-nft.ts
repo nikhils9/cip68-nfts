@@ -25,8 +25,9 @@ if (!userUtxos || !userUtxos.length) {
 }
 
 // TODO Idx of utxo < 256
-// Selecting a utxo containing atleast 4 ADA to cover tx fees and min ADA
-const selectedUtxo = getUtxoWithAssets(userUtxos, { ["lovelace"]: 4000000n });
+
+// Selecting a utxo containing atleast 5 ADA to cover tx fees and min ADA
+const selectedUtxo = getUtxoWithAssets(userUtxos, { ["lovelace"]: 5000000n });
 
 // Calculating asset name from the utxo which will be spent in the minting tx
 const assetNameSuffix = await getUniqueAssetNameSuffix(selectedUtxo);

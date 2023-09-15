@@ -1,12 +1,6 @@
-// deno-lint-ignore-file no-explicit-any
-import { Constr, Data, fromHex, fromText, toHex, toUnit, UTxO } from "lucid";
+import { Constr, Data } from "lucid";
 import { createLucidInstance, getCredential } from "./utils/lucid/utils.ts";
-import { crypto } from "crypto";
-import {
-  APPLIED_VALIDATOR_PATH,
-  NON_FUNGIBLE_TOKEN_LABEL,
-  REFERENCE_TOKEN_LABEL,
-} from "./common/constants.ts";
+import { APPLIED_VALIDATOR_PATH } from "./common/constants.ts";
 import { AppliedValidator, MetaDatum } from "./common/types.ts";
 
 const lucid = await createLucidInstance();
@@ -22,20 +16,28 @@ lucid.selectWalletFromPrivateKey(await getCredential("issuer.sk"));
 
 const userAddr = await getCredential("user.addr");
 const rdmr = Data.to(new Constr(1, []));
-const utxo = scriptUtxos[0];
+// const utxo = scriptUtxos[0];
 
 const tx = lucid
   .newTx()
-  .collectFrom(scriptUtxos, rdmr)
-  .payToAddressWithData(userAddr, { inline: utxo.datum! }, utxo.assets);
+  .collectFrom(scriptUtxos, rdmr);
 
-// scriptUtxos.forEach((utxo) => {
-//   if (utxo.datum) {
-//     tx.payToAddressWithData(userAddr, { inline: utxo.datum }, utxo.assets);
-//     // console.log(utxo.datum);
-//     // console.log(Data.from(utxo.datum));
-//   } else console.log("UTxO without datum found" + utxo);
-// });
+scriptUtxos.forEach((utxo) => {
+  if (utxo.datum) {
+    // Deserialze to MetaDatum to confirm datum type. UTxOs with malformed or
+    // different datum types cannot be removed.
+    try {
+      const _datum = Data.from<MetaDatum>(utxo.datum, MetaDatum);
+      tx.payToAddressWithData(userAddr, { inline: utxo.datum }, utxo.assets);
+    } catch (e) {
+      console.log(
+        "Cannot cast the datum of utxo to object of type MetaDatum. " +
+          e.message,
+      );
+      console.log(utxo);
+    }
+  } else console.log("UTxO without inline datum found: " + utxo);
+});
 
 const completedTx = await tx.addSigner(await lucid.wallet.address())
   .attachSpendingValidator(storeValidator.validator)
