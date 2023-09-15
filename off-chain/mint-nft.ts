@@ -1,14 +1,4 @@
-import {
-  addAssets,
-  assetsToValue,
-  Constr,
-  Data,
-  fromHex,
-  fromText,
-  toHex,
-  toUnit,
-  UTxO,
-} from "lucid";
+import { Constr, Data, fromHex, toHex, toUnit, UTxO } from "lucid";
 import {
   createLucidInstance,
   getCredential,
@@ -65,7 +55,6 @@ const userNFT = toUnit(
 
 const mintRdmr = Data.to(new Constr(0, []));
 
-// TODO create Metadatum type for direct serialization
 // Metadata to be stored in the datum of UTxO containing Ref NFT
 const metadata = Data.fromJson(
   JSON.parse(await Deno.readTextFile("./nft-metadata.json")),

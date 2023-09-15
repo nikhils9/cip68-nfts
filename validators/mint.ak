@@ -49,11 +49,8 @@ validator(
               )
 
             let store_address = credential.from_script(store)
-            trace cbor.diagnostic(outputs)
-            trace cbor.diagnostic(store_address)
             trace cbor.diagnostic(ref_value)
             let output_utxo = utils.output_by_addr_value(outputs, store_address, ref_value)
-            trace cbor.diagnostic(output_utxo)
 
             and {
               signing.verify_sig(transaction.extra_signatories, issuer)?,
