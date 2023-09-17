@@ -3,14 +3,14 @@ import {
   createLucidInstance,
   getCredential,
   getUtxoWithAssets,
-} from "./utils/lucid/utils.ts";
+} from "../utils/lucid/utils.ts";
 import { crypto } from "crypto";
 import {
   APPLIED_VALIDATOR_PATH,
   NON_FUNGIBLE_TOKEN_LABEL,
   REFERENCE_TOKEN_LABEL,
-} from "./common/constants.ts";
-import { AppliedValidator } from "./common/types.ts";
+} from "../common/constants.ts";
+import { AppliedValidator } from "../common/types.ts";
 
 const lucid = await createLucidInstance();
 
@@ -63,7 +63,10 @@ const metadata = Data.fromJson(
 const version = 1n;
 const extra = Data.void();
 
+// const metadatum = Data.to(new Constr(0, [metadata, version, extra]));
 const metadatum = Data.to(new Constr(0, [metadata, version, extra]));
+// const externalAddress =
+//   "addr_test1qrmdrjfxyzzda9rcq459lljmmke0jffnttpvu2za5zpr7p4za8cfdkfad86l0yyn0vdmrqu66dt6zafasg85laeqe6uqd248et";
 
 /*
 The below steps facilitate building the tx server side. Partially sign it
@@ -102,7 +105,7 @@ const txHash = await signedTx.submit();
 await lucid.awaitTx(txHash);
 
 console.log(
-  `Successfully minted CIP-68 NFT: ${userNFT},
+  `Successfully minted CIP-68 NFT: ${userNFT}
 Ref NFT: ${refNFT},
 storeAddress: ${storeValidator.lockAddress},
 to userAddress: ${userAddr},
