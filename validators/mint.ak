@@ -71,13 +71,12 @@ validator(
               utils.check_output_utxo(output_utxo)?
             }
           }
-          // TODO add check on output datum of utxo containing reference token
           Burn -> and {
               signing.verify_sig(transaction.extra_signatories, issuer)?,
               // Check nfts with ref and user token prefixes are burnt
               minting.by_prefix(mint_flat, policy_id, prefixes.prefix_100, -1)?,
               minting.by_prefix(mint_flat, policy_id, prefixes.prefix_222, -1)?,
-              // Must burn exactly two nfts. Check token names to ensure the nft pairs are correct
+              // Must burn exactly one nft pair. Check token names to ensure the nft pairs are correct
               when mint_flat is {
                 [(_pid1, tkn1, _amt1), (_pid2, tkn2, _amt2)] ->
                   bytearray.compare(
