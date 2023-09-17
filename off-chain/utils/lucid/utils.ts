@@ -119,6 +119,14 @@ export function parseValidator(validators: any, title: string): Script {
   };
 }
 
+export async function getAppliedValidator(
+  validatorName: string,
+  filePath?: string,
+): Promise<AppliedValidator> {
+  const validatorPath = filePath ? filePath : APPLIED_VALIDATOR_PATH;
+  return JSON.parse(await Deno.readTextFile(validatorPath + validatorName));
+}
+
 export function parseValidatorAndApplyParameters(
   validators: any,
   params: Data[],
