@@ -27,6 +27,7 @@ if (!userUtxos || !userUtxos.length) {
 // TODO Idx of utxo < 256
 
 // Selecting a utxo containing atleast 5 ADA to cover tx fees and min ADA
+// Note: To avoid tx balancing errors, the utxo should only contain lovelaces
 const selectedUtxo = getUtxoWithAssets(userUtxos, { ["lovelace"]: 5000000n });
 
 // Calculating asset name from the utxo which will be spent in the minting tx
