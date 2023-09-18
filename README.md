@@ -1,6 +1,6 @@
 # cip68-nfts
 
-A project to create and update basic CIP68 NFTs quickly. Uses Aiken &amp; Lucid.
+A project to create and update CIP68 NFTs quickly. Uses Aiken &amp; Lucid.
 
 ## Description
 
