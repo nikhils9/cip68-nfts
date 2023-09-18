@@ -50,7 +50,8 @@ validator(
 
             let store_address = credential.from_script(store)
             trace cbor.diagnostic(ref_value)
-            let output_utxo = utils.output_by_addr_value(outputs, store_address, ref_value)
+            let output_utxo =
+              utils.output_by_addr_value(outputs, store_address, ref_value)
 
             and {
               signing.verify_sig(transaction.extra_signatories, issuer)?,
@@ -63,12 +64,8 @@ validator(
               // Check user nft being minted
               minting.exact(mint_flat, policy_id, user_tkn, 1)?,
               // Must send the reference nft to store address
-              payout.at_least(
-                store_address,
-                ref_value,
-                outputs,
-              )?,
-              utils.check_output_utxo(output_utxo)?
+              payout.at_least(store_address, ref_value, outputs)?,
+              utils.check_output_utxo(output_utxo)?,
             }
           }
           Burn -> and {

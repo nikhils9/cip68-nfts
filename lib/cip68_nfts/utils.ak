@@ -1,10 +1,10 @@
-use aiken/transaction.{Output, InlineDatum}
-use cip68_nfts/types.{MetaDatum}
-use aiken/transaction/value.{Value}
-use aiken/transaction/credential.{Address}
 use aiken/cbor
 use aiken/list
+use aiken/transaction.{InlineDatum, Output}
+use aiken/transaction/credential.{Address}
+use aiken/transaction/value.{Value}
 use assist/values
+use cip68_nfts/types.{MetaDatum}
 
 // Check the output utxo containing the reference nft
 pub fn check_output_utxo(output: Output) -> Bool {
