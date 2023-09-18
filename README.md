@@ -61,18 +61,21 @@ Some noteworthy details:
 ## Steps
 
 1. Mint the CIP68 NFT pair.
+   \
    `deno run --allow-read --allow-write --allow-net mint-nft.ts`\
    Alternatively, you can choose to give all access the script may require, by
    running\
    `deno run --allow-all mint-nft.ts`
 2. Update the NFT metadata, version or extra fields of the Ref UTxO. Set the
    `assetNameSuffix` (in `update-nft.ts`) of the NFT whose data needs to be
-   updated.\
+   updated.
+   \
    `deno run --allow-all update-nft.ts`
-3. Remove all the locked Ref UTxOs to the user address.\
+3. Remove all the locked Ref UTxOs to the user address.
+   \
    `deno run --allow-all remove-nft.ts`
 4. Burn the CIP68 NFT pair by setting the `assetNameSuffix` (in `burn-nft.ts`).
    You need to have both the tokens in the user address before trying to burn
    them.
-
+   \
    `deno run --allow-all burn-nft.ts`
