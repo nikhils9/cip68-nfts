@@ -46,13 +46,16 @@ Some noteworthy details:
 2. Set the `PROJECT_PATH` to the absolute path of your project directory in
    `/off-chain/common/constants.ts`. Create a `wallet` directory in it.
 3. `cd off-chain/`
-4. Run the script to generate credentials
-   \
+4. Run the script to generate credentials\
    `deno run --allow-write generate-credential.ts`\
-   This will create two private key files and their corresponding address files
-   in the `wallet` directory.
-5. Send some tAda to `issuer.addr` and `user.addr`
-6. Update the NFT metadata as per your requirements in
+   This will create two private key files (`issuer.sk` &amp; `user.sk`) and
+   their corresponding address files in the `wallet` directory.
+5. Run the script to instantiate the "store" validator (with your "issuer"
+   address) and "mint" validator (with the "store" validator).
+
+   `deno run --allow-read --allow-write instantiate-validators.ts`
+6. Send some tAda to `issuer.addr` and `user.addr`
+7. Update the NFT metadata as per your requirements in
    `/off-chain/nft-metadata.json`.
 
 ## Steps
